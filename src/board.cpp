@@ -44,6 +44,11 @@ bool Board::solve_cell(Cell& cell) {
         last_cell_updated = &cell;
         print();
 #endif
+        // solve depended cells
+        for(short row = 0; row < DIMENSION; row ++)
+            for(short col = 0; col < DIMENSION; col ++)
+                if(cell.row != row && cell.col != col)
+                    solve_cell(matrix[row][col]);
         return true;
     }
     
@@ -63,6 +68,11 @@ bool Board::solve_cell(Cell& cell) {
         last_cell_updated = &cell;
         print();
 #endif
+        // solve depended cells
+        for(short row = 0; row < DIMENSION; row ++)
+            for(short col = 0; col < DIMENSION; col ++)
+                if(cell.row != row && cell.col != col)
+                    solve_cell(matrix[row][col]);
         return true;
     }
     
@@ -87,12 +97,17 @@ bool Board::solve_cell(Cell& cell) {
     }
     cell_updated = update_cell(cell, values);
     
-#ifdef STEP_BY_STEP
     if(cell_updated) {
+#ifdef STEP_BY_STEP
         last_cell_updated = &cell;
         print();
-    }
 #endif
+        // solve depended cells
+        for(short row = 0; row < DIMENSION; row ++)
+            for(short col = 0; col < DIMENSION; col ++)
+                if(cell.row != row && cell.col != col)
+                    solve_cell(matrix[row][col]);
+    }
     return cell_updated;
 }
 
