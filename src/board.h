@@ -5,7 +5,7 @@
 #define MAX_ITERATIONS 10000
 #define DIMENSION 9
 #define SUB_DIMENSION 3
-#define SLEEP_MILLISECONDS 0
+#define SLEEP_MILLISECONDS 200
 
 #include <fstream>
 #include <thread>

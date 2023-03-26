@@ -1,5 +1,5 @@
 #define FROM_FILE
-#define STEP_BY_STEP
+// #define STEP_BY_STEP
 
 #include <iostream>
 #include <chrono>
@@ -23,7 +23,9 @@ int main(int argc, char* argv[])
     sudoku.solve();
     chrono::steady_clock::time_point end = chrono::steady_clock::now();
 
-    // sudoku.print();
+#ifndef STEP_BY_STEP
+    sudoku.print();
+#endif
 
     cout << "Time elapsed = " << chrono::duration_cast<chrono::microseconds>(end - begin).count() << "[µs]" << endl;
     // cout << "Time elapsed = " << chrono::duration_cast<chrono::nanoseconds> (end - begin).count() << "[ns]" << endl;
