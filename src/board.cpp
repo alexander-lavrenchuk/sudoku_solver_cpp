@@ -48,10 +48,28 @@ bool Board::solve_cell(Cell& cell) {
         print();
 #endif
         // solve depended cells
+        // in same row
+        for(short col = 0; col < DIMENSION; col ++)
+            if(cell.col != col)
+                solve_cell(matrix[cell.row][col]);
+        
+        // in same column
         for(short row = 0; row < DIMENSION; row ++)
-            for(short col = 0; col < DIMENSION; col ++)
-                if(cell.row != row && cell.col != col)
-                    solve_cell(matrix[row][col]);
+            if(cell.row != row)
+                solve_cell(matrix[row][cell.col]);
+
+        // in same square
+        short i_beg = (short)(cell.row / SUB_DIMENSION) * SUB_DIMENSION;
+        short j_beg = (short)(cell.col / SUB_DIMENSION) * SUB_DIMENSION;
+        short i = 0, j = 0;
+        for(short m = 0; m < SUB_DIMENSION; m ++) {
+            for(short n = 0; n < SUB_DIMENSION; n ++) {
+                i = i_beg + m;
+                j = j_beg + n;
+                if(i != cell.row || j != cell.col)
+                    solve_cell(matrix[i][j]);
+            }
+        }
         return true;
     }
     
@@ -72,10 +90,28 @@ bool Board::solve_cell(Cell& cell) {
         print();
 #endif
         // solve depended cells
+        // in same row
+        for(short col = 0; col < DIMENSION; col ++)
+            if(cell.col != col)
+                solve_cell(matrix[cell.row][col]);
+        
+        // in same column
         for(short row = 0; row < DIMENSION; row ++)
-            for(short col = 0; col < DIMENSION; col ++)
-                if(cell.row != row && cell.col != col)
-                    solve_cell(matrix[row][col]);
+            if(cell.row != row)
+                solve_cell(matrix[row][cell.col]);
+
+        // in same square
+        short i_beg = (short)(cell.row / SUB_DIMENSION) * SUB_DIMENSION;
+        short j_beg = (short)(cell.col / SUB_DIMENSION) * SUB_DIMENSION;
+        short i = 0, j = 0;
+        for(short m = 0; m < SUB_DIMENSION; m ++) {
+            for(short n = 0; n < SUB_DIMENSION; n ++) {
+                i = i_beg + m;
+                j = j_beg + n;
+                if(i != cell.row || j != cell.col)
+                    solve_cell(matrix[i][j]);
+            }
+        }
         return true;
     }
     
@@ -106,10 +142,28 @@ bool Board::solve_cell(Cell& cell) {
         print();
 #endif
         // solve depended cells
+        // in same row
+        for(short col = 0; col < DIMENSION; col ++)
+            if(cell.col != col)
+                solve_cell(matrix[cell.row][col]);
+        
+        // in same column
         for(short row = 0; row < DIMENSION; row ++)
-            for(short col = 0; col < DIMENSION; col ++)
-                if(cell.row != row && cell.col != col)
-                    solve_cell(matrix[row][col]);
+            if(cell.row != row)
+                solve_cell(matrix[row][cell.col]);
+
+        // in same square
+        short i_beg = (short)(cell.row / SUB_DIMENSION) * SUB_DIMENSION;
+        short j_beg = (short)(cell.col / SUB_DIMENSION) * SUB_DIMENSION;
+        short i = 0, j = 0;
+        for(short m = 0; m < SUB_DIMENSION; m ++) {
+            for(short n = 0; n < SUB_DIMENSION; n ++) {
+                i = i_beg + m;
+                j = j_beg + n;
+                if(i != cell.row || j != cell.col)
+                    solve_cell(matrix[i][j]);
+            }
+        }
     }
     return cell_updated;
 }

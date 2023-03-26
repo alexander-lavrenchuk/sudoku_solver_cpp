@@ -1,4 +1,4 @@
-#define FROM_FILE
+// #define FROM_FILE
 // #define STEP_BY_STEP
 
 #include <iostream>
