@@ -1,7 +1,10 @@
 Board::Board():
     is_changed(false),
-    iterations_count(0),
-    last_cell_updated(nullptr) {}
+    iterations_count(0)
+#ifdef STEP_BY_STEP
+    , last_cell_updated(nullptr)
+#endif
+    {}
 
 short& Board::operator() (short row, short col) {
     return matrix[row][col].value;
@@ -167,6 +170,7 @@ void Board::print() {
     system("clear");
     for(short i = 0; i < DIMENSION; i ++) {
         for(short j = 0; j < DIMENSION; j ++) {
+#ifdef STEP_BY_STEP
             if(i == last_cell_updated->row &&
                     j == last_cell_updated->col) {
                 cout << colors::set_format(FOREGROUND_RED);
@@ -175,6 +179,9 @@ void Board::print() {
             }
             else
                 cout << matrix[i][j].value << " ";
+#else
+            cout << matrix[i][j].value << " ";
+#endif
         }
         cout << "\n";
     }
@@ -186,7 +193,6 @@ void Board::print() {
     // cout << "Press enter to continue...";
     // cin.get();
     this_thread::sleep_for(chrono::milliseconds(SLEEP_MILLISECONDS));
-
 #endif
     return;
 }
