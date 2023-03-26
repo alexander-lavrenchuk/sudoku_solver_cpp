@@ -1,5 +1,6 @@
-const short DIMENSION = 9;
-const short SUB_DIMENSION = 3;
+#pragma once
+#ifndef _CELL_H_
+#define _CELL_H_
 
 class Cell {
 private:
@@ -12,7 +13,8 @@ public:
     Cell();
     ~Cell();
     bool update();
-    // void get_states(bool (&states)[DIMENSION]) {
-    //     states = this->states;
 };
 
+#include "cell.cpp"
+
+#endif  // _CELL_H_

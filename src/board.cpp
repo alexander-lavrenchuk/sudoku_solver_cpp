@@ -1,15 +1,14 @@
-#include "board.h"
-
-using namespace std;
-
 Board::Board():
-    is_changed(false) {
-}
+    is_changed(false),
+    iterations_count(0),
+    last_cell_updated(nullptr) {}
+
 short& Board::operator() (short row, short col) {
     return matrix[row][col].value;
 }
 
 bool Board::update_cell(Cell& cell, short (&values)[DIMENSION]) {
+    iterations_count ++;
     short value = 0;
     for(short i = 0; i < DIMENSION; i ++) {
         value = values[i];
@@ -17,7 +16,10 @@ bool Board::update_cell(Cell& cell, short (&values)[DIMENSION]) {
             break;
         cell.states[value - 1] = false;
     }
-    return cell.update();
+    bool cell_updated = cell.update();
+    if(cell_updated)
+        cells_solved ++;
+    return cell_updated;
 }
 
 bool Board::solve_cell(Cell& cell) {
@@ -25,7 +27,7 @@ bool Board::solve_cell(Cell& cell) {
         return false;
 
     bool cell_updated = false;
-    short value = 0;
+    // short value = 0;
     short idx = 0;
     short values[DIMENSION] {};
     
@@ -33,13 +35,17 @@ bool Board::solve_cell(Cell& cell) {
     for(short j = 0; j < DIMENSION; j ++) {
         if(j == cell.col)
             continue;
-        value = matrix[cell.row][j].value;
-        if(value > 0)
-            values[idx ++] = value;
+        if(matrix[cell.row][j].value > 0)
+            values[idx ++] = matrix[cell.row][j].value;
     }
     cell_updated = update_cell(cell, values);
-    if(cell_updated)
+    if(cell_updated) {
+#ifdef STEP_BY_STEP
+        last_cell_updated = &cell;
+        print();
+#endif
         return true;
+    }
     
     // solve by column
     idx = 0;
@@ -48,13 +54,17 @@ bool Board::solve_cell(Cell& cell) {
     for(short i = 0; i < DIMENSION; i ++) {
         if(i == cell.row)
             continue;
-        value = matrix[i][cell.col].value;
-        if(value > 0)
-            values[idx ++] = value;
+        if(matrix[i][cell.col].value > 0)
+            values[idx ++] = matrix[i][cell.col].value;
     }
     cell_updated = update_cell(cell, values);
-    if(cell_updated)
+    if(cell_updated) {
+#ifdef STEP_BY_STEP
+        last_cell_updated = &cell;
+        print();
+#endif
         return true;
+    }
     
     // solve by square
     idx = 0;
@@ -71,21 +81,24 @@ bool Board::solve_cell(Cell& cell) {
             j = j_beg + n;
             if(i == cell.row && j == cell.col)
                 continue;
-            value = matrix[i][j].value;
-            if(value > 0)
-                values[idx ++] = value;
+            if(matrix[i][j].value > 0)
+                values[idx ++] = matrix[i][j].value;
         }
     }
     cell_updated = update_cell(cell, values);
     
+#ifdef STEP_BY_STEP
+    if(cell_updated) {
+        last_cell_updated = &cell;
+        print();
+    }
+#endif
     return cell_updated;
 }
 
 short Board::solve() {
-    short iteration = 0;
     bool matrix_is_changed = false;
-    while(iteration < MAX_ITERATIONS) {
-        iteration ++;
+    while(iterations_count < MAX_ITERATIONS) {
         matrix_is_changed = false;
         for(short i = 0; i < DIMENSION; i ++)
             for(short j = 0; j < DIMENSION; j ++)
@@ -94,7 +107,7 @@ short Board::solve() {
         if(!matrix_is_changed)
             break;
     }
-    return iteration;
+    return iterations_count;
 }
 
 void Board::set_line(const short row, const string string_values) {
@@ -108,6 +121,15 @@ void Board::set_line(const short row, const string string_values) {
     return;
 }
 
+void Board::calculate_cells_solved() {
+    cells_solved = 0;
+    for(short i = 0; i < DIMENSION; i ++)
+        for(short j = 0; j < DIMENSION; j ++)
+            if(matrix[i][j].value > 0)
+                cells_solved ++;
+    return;
+}
+
 void Board::input() {
     string str = "";
     cout << "Enter sudoku rows:\n";
@@ -117,12 +139,11 @@ void Board::input() {
         cin >> str;
         set_line(row, str);
     }
+    calculate_cells_solved();
     return;
 }
 
 void Board::set_from_file(const char* path) {
-    // string path;
-    // path = "input.vim";  
     ifstream fin;
     fin.open(path);
     if(fin.is_open())
@@ -138,14 +159,34 @@ void Board::set_from_file(const char* path) {
         }
     }
     fin.close();
+    calculate_cells_solved();
     return;
 }
 
 void Board::print() {
+    system("clear");
     for(short i = 0; i < DIMENSION; i ++) {
-        for(short j = 0; j < DIMENSION; j ++)
-            cout << matrix[i][j].value << " ";
+        for(short j = 0; j < DIMENSION; j ++) {
+            if(i == last_cell_updated->row &&
+                    j == last_cell_updated->col) {
+                cout << colors::set_format(FOREGROUND_RED);
+                cout << matrix[i][j].value << " ";
+                cout << colors::reset_format();
+            }
+            else
+                cout << matrix[i][j].value << " ";
+        }
         cout << "\n";
     }
+    cout << "\n";
+    cout << "Solved cells: " << cells_solved << "\n";
+    cout << "Solved in " << iterations_count << " iterations.\n";
+
+#ifdef STEP_BY_STEP
+    // cout << "Press enter to continue...";
+    // cin.get();
+    this_thread::sleep_for(chrono::milliseconds(SLEEP_MILLISECONDS));
+
+#endif
     return;
 }

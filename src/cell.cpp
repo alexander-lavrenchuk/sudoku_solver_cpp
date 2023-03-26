@@ -1,5 +1,3 @@
-#include "cell.h"
-
 Cell::Cell():
     row(0), col(0), value(0),
     states {1, 1, 1, 1, 1, 1, 1, 1, 1} {
