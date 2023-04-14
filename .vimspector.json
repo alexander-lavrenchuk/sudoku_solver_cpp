@@ -1,0 +1,12 @@
+{
+  "configurations": {
+    "CPP: Run current script": {
+      "adapter": "vscode-cpptools",
+      "configuration": {
+        "request": "launch",
+        "program": "./main"
+      }
+    }
+  }
+}
+
